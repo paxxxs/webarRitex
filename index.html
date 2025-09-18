@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>WebAR Ritex</title>
+    <title>WebAR Test - Ritex</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
 
     <!-- A-Frame -->
@@ -19,49 +19,38 @@
     <a-scene
       vr-mode-ui="enabled: false"
       embedded
-      arjs="trackingMethod: best; sourceType: webcam; facingMode: environment; debugUIEnabled: false;"
+      arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: true;"
     >
-      <!-- Target NFT (tapa) -->
+      <!-- Marker NFT -->
       <a-nft
         type="nft"
         url="./assets/target/tapa"
         smooth="true" smoothCount="10" smoothTolerance="0.01" smoothThreshold="0.05"
       >
-        <!-- Plano proporcional al video 500x1100 -->
-        <a-plane id="videoPlane"
-                 position="0 0 0"
-                 rotation="0 0 0"
-                 width="1"
-                 height="2.2"
-                 visible="false"></a-plane>
+        <!-- Plano rojo de prueba -->
+        <a-plane id="testPlane" position="0 0 0" rotation="0 0 0" width="1" height="0.6" 
+                 color="red" visible="false"></a-plane>
       </a-nft>
 
       <a-entity camera></a-entity>
     </a-scene>
 
     <script>
-      // Crear elemento video
-      const video = document.createElement('video');
-      video.setAttribute('id', 'arVideo');
-      video.setAttribute('src', './assets/video/pruebaAR.mp4');
-      video.setAttribute('loop', '');
-      video.setAttribute('muted', '');
-      video.setAttribute('playsinline', '');
-      video.setAttribute('autoplay', '');
-      video.crossOrigin = 'anonymous';
-      document.body.appendChild(video);
+      window.addEventListener("load", () => {
+        const nft = document.querySelector("a-nft");
+        const plane = document.querySelector("#testPlane");
 
-      // Al encontrar el marcador
-      document.querySelector('a-nft').addEventListener('markerFound', () => {
-        document.querySelector('#videoPlane').setAttribute('material', 'shader: flat; src: #arVideo');
-        document.querySelector('#videoPlane').setAttribute('visible', 'true');
-        video.play().catch(()=>{});
-      });
+        console.log("NFT cargado:", nft);
 
-      // Al perder el marcador
-      document.querySelector('a-nft').addEventListener('markerLost', () => {
-        document.querySelector('#videoPlane').setAttribute('visible', 'false');
-        video.pause();
+        nft.addEventListener("markerFound", () => {
+          console.log("🎯 Marker detectado!");
+          plane.setAttribute("visible", "true");
+        });
+
+        nft.addEventListener("markerLost", () => {
+          console.log("❌ Marker perdido!");
+          plane.setAttribute("visible", "false");
+        });
       });
     </script>
   </body>
