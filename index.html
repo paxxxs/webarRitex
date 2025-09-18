@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>WebAR Ritex</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+
+    <!-- A-Frame -->
+    <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
+    <!-- AR.js con soporte NFT -->
+    <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js@3.3.2/aframe/build/aframe-ar-nft.min.js"></script>
+
+    <style>
+      html, body { margin: 0; padding: 0; overflow: hidden; height: 100%; }
+    </style>
+  </head>
+
+  <body>
+    <a-scene
+      vr-mode-ui="enabled: false"
+      embedded
+      arjs="trackingMethod: best; sourceType: webcam; facingMode: environment; debugUIEnabled: false;"
+    >
+      <!-- Target NFT (tapa) -->
+      <a-nft
+        type="nft"
+        url="./assets/target/tapa"
+        smooth="true" smoothCount="10" smoothTolerance="0.01" smoothThreshold="0.05"
+      >
+        <!-- Plano proporcional al video 500x1100 -->
+        <a-plane id="videoPlane"
+                 position="0 0 0"
+                 rotation="0 0 0"
+                 width="1"
+                 height="2.2"
+                 visible="false"></a-plane>
+      </a-nft>
+
+      <a-entity camera></a-entity>
+    </a-scene>
+
+    <script>
+      // Crear elemento video
+      const video = document.createElement('video');
+      video.setAttribute('id', 'arVideo');
+      video.setAttribute('src', './assets/video/pruebaAR.mp4');
+      video.setAttribute('loop', '');
+      video.setAttribute('muted', '');
+      video.setAttribute('playsinline', '');
+      video.setAttribute('autoplay', '');
+      video.crossOrigin = 'anonymous';
+      document.body.appendChild(video);
+
+      // Al encontrar el marcador
+      document.querySelector('a-nft').addEventListener('markerFound', () => {
+        document.querySelector('#videoPlane').setAttribute('material', 'shader: flat; src: #arVideo');
+        document.querySelector('#videoPlane').setAttribute('visible', 'true');
+        video.play().catch(()=>{});
+      });
+
+      // Al perder el marcador
+      document.querySelector('a-nft').addEventListener('markerLost', () => {
+        document.querySelector('#videoPlane').setAttribute('visible', 'false');
+        video.pause();
+      });
+    </script>
+  </body>
+</html>
