@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>WebAR Ritex - Test Marker</title>
+    <title>WebAR Ritex - Video Test</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
 
     <!-- A-Frame -->
@@ -12,6 +12,7 @@
 
     <style>
       html, body { margin: 0; padding: 0; overflow: hidden; height: 100%; }
+      #arVideo { display: none; }
     </style>
   </head>
 
@@ -21,20 +22,20 @@
       embedded
       arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: true;"
     >
-      <!-- NFT marker con ID -->
+      <!-- Marker NFT -->
       <a-nft
         id="nftMarker"
         type="nft"
         url="./assets/target/tapa"
         smooth="true" smoothCount="10" smoothTolerance="0.01" smoothThreshold="0.05"
       >
-        <!-- Plano rojo de prueba -->
-        <a-plane id="testPlane"
+        <!-- Plano donde se proyecta el video -->
+        <a-plane id="videoPlane"
                  position="0 0 0"
                  rotation="0 0 0"
                  width="1"
-                 height="0.6"
-                 color="red"
+                 height="2.2"
+                 material="shader: flat; src: #arVideo"
                  visible="false">
         </a-plane>
       </a-nft>
@@ -42,21 +43,34 @@
       <a-entity camera></a-entity>
     </a-scene>
 
+    <!-- Elemento <video> oculto que sirve como textura -->
+    <video id="arVideo"
+           src="./assets/video/pruebaAR.mp4"
+           loop
+           muted
+           playsinline
+           crossorigin="anonymous"
+           preload="auto">
+    </video>
+
     <script>
       window.addEventListener("load", () => {
         const markerEl = document.querySelector("#nftMarker");
-        const plane = document.querySelector("#testPlane");
+        const video = document.querySelector("#arVideo");
+        const videoPlane = document.querySelector("#videoPlane");
 
         console.log("✅ Escena cargada, esperando marker...");
 
         markerEl.addEventListener("markerFound", () => {
           console.log("🎯 Marker detectado!");
-          plane.setAttribute("visible", "true");
+          videoPlane.setAttribute("visible", "true");
+          video.play().catch(err => console.log("⚠️ Error autoplay:", err));
         });
 
         markerEl.addEventListener("markerLost", () => {
           console.log("❌ Marker perdido!");
-          plane.setAttribute("visible", "false");
+          videoPlane.setAttribute("visible", "false");
+          video.pause();
         });
       });
     </script>
