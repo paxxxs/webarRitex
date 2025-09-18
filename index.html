@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <title>WebAR Test - Ritex</title>
+    <title>WebAR Ritex - Test Marker</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
 
     <!-- A-Frame -->
@@ -21,15 +21,22 @@
       embedded
       arjs="trackingMethod: best; sourceType: webcam; debugUIEnabled: true;"
     >
-      <!-- Marker NFT -->
+      <!-- NFT marker con ID -->
       <a-nft
+        id="nftMarker"
         type="nft"
         url="./assets/target/tapa"
         smooth="true" smoothCount="10" smoothTolerance="0.01" smoothThreshold="0.05"
       >
         <!-- Plano rojo de prueba -->
-        <a-plane id="testPlane" position="0 0 0" rotation="0 0 0" width="1" height="0.6" 
-                 color="red" visible="false"></a-plane>
+        <a-plane id="testPlane"
+                 position="0 0 0"
+                 rotation="0 0 0"
+                 width="1"
+                 height="0.6"
+                 color="red"
+                 visible="false">
+        </a-plane>
       </a-nft>
 
       <a-entity camera></a-entity>
@@ -37,18 +44,20 @@
 
     <script>
       window.addEventListener("load", () => {
-        const sceneEl = document.querySelector("a-scene");
+        const markerEl = document.querySelector("#nftMarker");
+        const plane = document.querySelector("#testPlane");
 
-sceneEl.addEventListener("markerFound", (e) => {
-  console.log("🎯 Marker detectado!", e);
-  document.querySelector("#testPlane").setAttribute("visible", "true");
-});
+        console.log("✅ Escena cargada, esperando marker...");
 
-sceneEl.addEventListener("markerLost", (e) => {
-  console.log("❌ Marker perdido!", e);
-  document.querySelector("#testPlane").setAttribute("visible", "false");
-});
+        markerEl.addEventListener("markerFound", () => {
+          console.log("🎯 Marker detectado!");
+          plane.setAttribute("visible", "true");
+        });
 
+        markerEl.addEventListener("markerLost", () => {
+          console.log("❌ Marker perdido!");
+          plane.setAttribute("visible", "false");
+        });
       });
     </script>
   </body>
