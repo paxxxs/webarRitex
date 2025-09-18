@@ -37,20 +37,18 @@
 
     <script>
       window.addEventListener("load", () => {
-        const nft = document.querySelector("a-nft");
-        const plane = document.querySelector("#testPlane");
+        const sceneEl = document.querySelector("a-scene");
 
-        console.log("NFT cargado:", nft);
+sceneEl.addEventListener("markerFound", (e) => {
+  console.log("🎯 Marker detectado!", e);
+  document.querySelector("#testPlane").setAttribute("visible", "true");
+});
 
-        nft.addEventListener("markerFound", () => {
-          console.log("🎯 Marker detectado!");
-          plane.setAttribute("visible", "true");
-        });
+sceneEl.addEventListener("markerLost", (e) => {
+  console.log("❌ Marker perdido!", e);
+  document.querySelector("#testPlane").setAttribute("visible", "false");
+});
 
-        nft.addEventListener("markerLost", () => {
-          console.log("❌ Marker perdido!");
-          plane.setAttribute("visible", "false");
-        });
       });
     </script>
   </body>
